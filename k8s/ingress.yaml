@@ -1,18 +1,24 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: title
+  name: ingress
+  namespace: StudioBarber
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "gce"  #balanceador de carga , hay que poner una ip reservada
+    kubernetes.io/ingress.global-static-ip-name: "gce-ip-reservada"
+
 spec:
-  ingressClassName: nginx
   rules:
     - http:
         paths:
-          - path: /api
+          - path: /        # permite la entrada de las peticiones https al microservicio api-gateway(servicio)
             pathType: Prefix
             backend:
               service:
-                name: title
+                name: api-gateway
                 port:
                   number: 80
+
+
+# Al no tener ingressClassName (para el controlador) lo maneja GKE controller con la antoacion ingress.class
+# cuando el cleinte hace una peticopn ejemplo /reservas o /xxx lo lleva siempre al api-gateway service en el purto 80
