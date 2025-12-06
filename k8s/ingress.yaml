@@ -2,10 +2,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress
-  namespace: StudioBarber
+  namespace: studio-barber
   annotations:
     kubernetes.io/ingress.class: "gce"  #balanceador de carga , hay que poner una ip reservada
     kubernetes.io/ingress.global-static-ip-name: "gce-ip-reservada"
+    #aumentar el tiempo de espera para las respuestas
+    ingress.gcp.kubernetes.io/read-timeout: "120"
+    ingress.gcp.kubernetes.io/write-timeout: "120"
 
 spec:
   rules:
@@ -15,7 +18,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: api-gateway
+                name: api-service
                 port:
                   number: 80
 
